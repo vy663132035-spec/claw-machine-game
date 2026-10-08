@@ -20,7 +20,7 @@
       padding: 20px;
     }
     .wrap {
-      width: min(980px, 100%);
+      width: min(820px, 100%);
     }
     .topbar {
       display: flex;
@@ -52,23 +52,24 @@
     .machine-outer {
       position: relative;
       width: 100%;
-      height: 420px;
-      background: linear-gradient(to bottom, #ffd86c, #ffaf2d);
-      border: 6px solid #8b4a24;
+      height: 300px;
+      background: linear-gradient(to bottom, #f0c85f, #f1b63a);
+      border: 6px solid #91511d;
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 18px 32px rgba(0,0,0,.18);
       cursor: pointer;
       user-select: none;
+      padding: 10px;
     }
     .machine-outer.closed {
       background: linear-gradient(to bottom, #1a1a1a, #090909);
     }
 
-    /* Hộp trắng bên trong */
     .machine {
-      position: absolute;
-      inset: 22px 18px 18px 18px;
+      position: relative;
+      width: 100%;
+      height: 100%;
       background: #f8f8f8;
       border: 2px solid #ddd;
       border-radius: 8px;
@@ -77,22 +78,20 @@
     }
 
     .machine.closed {
-      background: rgba(0,0,0,.6);
+      background: rgba(0,0,0,.58);
     }
 
-    /* Cần câu container - di chuyển trái phải */
-    .claw-container {
+    .hook-zone {
       position: absolute;
       top: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: 100%;
+      width: 120px;
       height: 100%;
-      z-index: 10;
+      z-index: 20;
       pointer-events: none;
     }
 
-    /* Cần câu chính (phần trên + phần kéo xuống) */
     .claw {
       position: absolute;
       top: 0;
@@ -102,73 +101,78 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      z-index: 10;
+      z-index: 20;
+      pointer-events: none;
     }
 
     .claw-head {
       position: relative;
-      width: 80px;
-      height: 80px;
-      flex-shrink: 0;
+      width: 76px;
+      height: 52px;
+      margin-top: 4px;
+      border-radius: 10px 10px 18px 18px;
+      background: linear-gradient(#dbdbdb, #7d7d7d);
+      border: 2px solid rgba(0,0,0,.2);
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.35);
     }
 
-    .claw-finger {
+    .claw-head::before,
+    .claw-head::after {
+      content: "";
       position: absolute;
-      width: 12px;
-      height: 42px;
-      top: 0;
-      background: linear-gradient(#d7d7d7, #777);
+      bottom: -12px;
+      width: 14px;
+      height: 26px;
+      background: linear-gradient(#d9d9d9, #7d7d7d);
       border-radius: 12px;
-      transition: transform .2s ease;
+      top: 20px;
     }
+    .claw-head::before { left: 10px; transform: rotate(-28deg); }
+    .claw-head::after { right: 10px; transform: rotate(28deg); }
 
-    .claw-finger.left {
-      left: 14px;
-      transform: rotate(-28deg);
-      transform-origin: center bottom;
-    }
+    .claw-head.closed::before { transform: rotate(-8deg); }
+    .claw-head.closed::after { transform: rotate(8deg); }
 
-    .claw-finger.right {
-      right: 14px;
-      transform: rotate(28deg);
-      transform-origin: center bottom;
-    }
-
-    .claw.closed .claw-finger.left {
-      transform: rotate(-8deg);
-    }
-
-    .claw.closed .claw-finger.right {
-      transform: rotate(8deg);
-    }
-
-    /* Phần dây kéo xuống */
-    .claw-rope {
+    .rope {
       width: 4px;
       background: #444;
       border-radius: 2px;
       min-height: 0;
-      flex-grow: 1;
+      height: 0px;
+      margin-top: 0;
+      transition: height 0.02s linear;
     }
 
-    /* Thú bông */
     .pet {
       position: absolute;
-      bottom: 26px;
-      width: 64px;
-      height: 64px;
+      width: 42px;
+      height: 42px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 42px;
+      font-size: 28px;
       z-index: 3;
-      animation: sway 12s ease-in-out infinite;
+      border-radius: 50%;
+      user-select: none;
+      transition: transform 0.15s ease, opacity 0.2s ease, filter 0.2s ease;
     }
 
-    @keyframes sway {
-      0% { left: 16px; }
-      50% { left: calc(100% - 82px); }
-      100% { left: 16px; }
+    .pet.held {
+      position: fixed;
+      z-index: 999;
+      pointer-events: none;
+      opacity: 1;
+      filter: drop-shadow(0 8px 10px rgba(0,0,0,.2));
+    }
+
+    .pet.saved-burst {
+      animation: popOut 0.8s ease forwards;
+    }
+
+    @keyframes popOut {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.8); opacity: 1; }
+      100% { transform: scale(2.8); opacity: 0; }
     }
 
     .machine.closed .pet {
@@ -217,22 +221,14 @@
       padding: 16px;
     }
 
-    .panel.saved {
-      background: #eafaf0;
-      border: 3px solid #2ebf62;
-    }
-
-    .panel.lost {
-      background: #fff0f0;
-      border: 3px solid #f04d4d;
-    }
+    .panel.saved { background: #eafaf0; border: 3px solid #2ebf62; }
+    .panel.lost { background: #fff0f0; border: 3px solid #f04d4d; }
 
     .panel h2 {
       margin: 0 0 14px;
       text-align: center;
       font-size: clamp(18px, 2.4vw, 28px);
     }
-
     .panel.saved h2 { color: #1a9f46; }
     .panel.lost h2 { color: #de3a3a; }
 
@@ -254,12 +250,10 @@
 
     .animal.saved { animation: hop .7s ease-in-out; }
     .animal.lost { filter: grayscale(100%) opacity(.72); animation: wobble .7s ease-in-out; }
-
     @keyframes hop {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-12px); }
     }
-
     @keyframes wobble {
       0%, 100% { transform: rotate(0deg); }
       25% { transform: rotate(-5deg); }
@@ -287,23 +281,9 @@
       box-shadow: 0 10px 18px rgba(76,70,200,.25);
     }
 
-    .caught {
-      position: fixed;
-      font-size: 78px;
-      z-index: 2000;
-      pointer-events: none;
-      animation: fly .9s ease-out forwards;
-    }
-
-    @keyframes fly {
-      0% { opacity: 1; transform: translate(-50%, 0) scale(1) rotate(0deg); }
-      35% { opacity: 1; transform: translate(-50%, -110px) scale(1.2) rotate(10deg); }
-      100% { opacity: 0; transform: translate(-50%, -320px) scale(0.8) rotate(-18deg); }
-    }
-
     @media (max-width: 700px) {
       .result-grid { grid-template-columns: 1fr; }
-      .machine-outer { height: 320px; }
+      .machine-outer { height: 260px; }
       .topbar { padding: 14px 16px; }
     }
   </style>
@@ -316,26 +296,7 @@
     </div>
 
     <div class="machine-outer" id="machineOuter">
-      <div class="machine" id="machine">
-        <!-- Cần câu di chuyển trái phải -->
-        <div class="claw-container" id="clawContainer">
-          <div class="claw" id="claw">
-            <div class="claw-head">
-              <div class="claw-finger left"></div>
-              <div class="claw-finger right"></div>
-            </div>
-            <div class="claw-rope" id="rope"></div>
-          </div>
-        </div>
-
-        <!-- Thú bông -->
-        <div class="pet">🐰</div>
-        <div class="pet" style="left: 22%; animation-delay: .7s;">🐻</div>
-        <div class="pet" style="left: 42%; animation-delay: 1.4s;">🐸</div>
-        <div class="pet" style="left: 62%; animation-delay: 2.2s;">🐧</div>
-        <div class="pet" style="left: 77%; animation-delay: 3.1s;">🦊</div>
-        <div class="pet" style="left: 90%; animation-delay: 4.5s;">🐱</div>
-      </div>
+      <div class="machine" id="machine"></div>
     </div>
 
     <div class="instruction">👈 Nhấn chuột để dừng cần câu và gắp thú 👉</div>
@@ -357,156 +318,350 @@
   </div>
 
   <script>
-    const machineOuter = document.getElementById('machineOuter');
     const machine = document.getElementById('machine');
-    const clawContainer = document.getElementById('clawContainer');
-    const claw = document.getElementById('claw');
+    const machineOuter = document.getElementById('machineOuter');
     const timerEl = document.getElementById('timer');
     const resultEl = document.getElementById('result');
     const savedListEl = document.getElementById('savedList');
     const lostListEl = document.getElementById('lostList');
-    const rope = document.getElementById('rope');
 
     let timeLeft = 40;
-    let direction = 1;
-    let clawPos = 50;
-    let clawMoving = true;
     let gameOn = true;
     let saved = [];
     let lost = [];
-    let clawLowered = false;
 
-    function updateTimer() {
-      timerEl.textContent = timeLeft;
-      if (timeLeft <= 10) timerEl.classList.add('warning');
+    const emojis = ['🐰','🐻','🐸','🐧','🦊','🐱','🐶','🐵','🐼','🐯','🦁','🐨','🐮','🐹','🐷','🐺','🐲','🐤','🐥','🐔','🐵','🐼','🐰','🐶','🐻'];
+    const patterns = ['lr','rl','mid','bounce','pause','hidden'];
+    const animals = [];
+
+    let hook = {
+      x: 50,
+      y: 0,
+      active: true,
+      lowered: false,
+      grabbing: false,
+      grabTarget: null,
+      holding: null,
+      isDone: false
+    };
+
+    function buildClaw() {
+      const hookZone = document.createElement('div');
+      hookZone.className = 'hook-zone';
+      hookZone.id = 'hook-zone';
+      machine.appendChild(hookZone);
+
+      const claw = document.createElement('div');
+      claw.className = 'claw';
+      claw.id = 'claw';
+      hookZone.appendChild(claw);
+
+      const head = document.createElement('div');
+      head.className = 'claw-head';
+      claw.appendChild(head);
+
+      const rope = document.createElement('div');
+      rope.className = 'rope';
+      rope.id = 'rope';
+      claw.appendChild(rope);
+
+      hook.zone = hookZone;
+      hook.claw = claw;
+      hook.head = head;
+      hook.rope = rope;
     }
 
-    // Cần câu di chuyển trái phải với tốc độ 1/2 (chậm hơn 2 lần)
-    setInterval(() => {
-      if (!gameOn || !clawMoving) return;
-      clawPos += direction * 0.9; // Từ 1.8 xuống 0.9 = 1/2 tốc độ
-      if (clawPos <= 18 || clawPos >= 82) direction *= -1;
-      clawContainer.style.left = clawPos + '%';
-    }, 25);
+    function createAnimal(index) {
+      const pet = document.createElement('div');
+      pet.className = 'pet';
+      pet.textContent = emojis[index % emojis.length];
+      pet.style.left = '0px';
+      pet.style.top = '0px';
+      pet.dataset.index = String(index);
+      machine.appendChild(pet);
 
-    const timerLoop = setInterval(() => {
+      const pattern = patterns[index % patterns.length];
+      const animal = {
+        el: pet,
+        emoji: emojis[index % emojis.length],
+        index,
+        pattern,
+        x: 0,
+        y: 0,
+        baseX: 0,
+        baseY: 0,
+        amp: 20 + ((index * 13) % 70),
+        speed: 0.7 + ((index % 5) * 0.18),
+        phase: index * 1.7,
+        drift: idxToFloat(index),
+        state: 'free',
+        hidden: index % 7 === 0,
+        pause: index % 3 === 0
+      };
+
+      const r = 20 + (index % 6) * 12;
+      const areaW = machine.clientWidth - 90;
+      const areaH = machine.clientHeight - 80;
+      animal.baseX = 30 + (index * 12) % (areaW - 40);
+      animal.baseY = 70 + ((index * 41) % (areaH - 110));
+      animal.x = animal.baseX;
+      animal.y = animal.baseY;
+      pet.style.left = `${animal.x}px`;
+      pet.style.top = `${animal.y}px`;
+      pet.style.zIndex = String(5 + (index % 5));
+      animals.push(animal);
+    }
+
+    function idxToFloat(n) {
+      return (n * 0.69) % 1.3;
+    }
+
+    function updateAnimals(t) {
       if (!gameOn) return;
-      timeLeft--;
-      updateTimer();
-      if (timeLeft <= 0) {
-        endGame();
-        clearInterval(timerLoop);
-      }
-    }, 1000);
+      animals.forEach((animal, i) => {
+        if (animal.state !== 'free') return;
 
-    machine.addEventListener('click', () => {
-      if (!gameOn || !clawMoving) return;
-      clawMoving = false;
-      claw.classList.add('closed');
+        const j = t * 0.001 * animal.speed;
+        const bx = animal.baseX;
+        const by = animal.baseY;
+        let x = bx;
+        let y = by;
 
-      const pets = [...document.querySelectorAll('.pet')];
-      const machineRect = machine.getBoundingClientRect();
-      const clawHeadRect = claw.querySelector('.claw-head').getBoundingClientRect();
-      
-      let target = null;
-
-      // Kiểm tra va chạm giữa phần móc câu và thú bông
-      for (const pet of pets) {
-        const petRect = pet.getBoundingClientRect();
-        const intersects = 
-          clawHeadRect.left < petRect.right &&
-          clawHeadRect.right > petRect.left &&
-          clawHeadRect.bottom > petRect.top;
-        
-        if (intersects && pet.style.opacity !== '0') {
-          target = pet;
-          break;
-        }
-      }
-
-      lowerClaw(() => {
-        if (target) {
-          const emoji = target.textContent.trim();
-          saved.push(emoji);
-          const x = target.getBoundingClientRect().left + target.offsetWidth / 2;
-          const y = target.getBoundingClientRect().top + 10;
-          spawnFloatEmoji(emoji, x, y);
-          target.style.opacity = '0';
-          target.style.transform = 'scale(.4)';
+        switch (animal.pattern) {
+          case 'lr':
+            x = bx + Math.sin(j + animal.phase) * animal.amp;
+            y = by + Math.sin(j * 1.7 + animal.phase) * 12;
+            break;
+          case 'rl':
+            x = bx + Math.sin(-j + animal.phase) * animal.amp;
+            y = by + Math.cos(j * 1.2 + animal.phase) * 14;
+            break;
+          case 'mid':
+            x = bx + Math.sin(j * 1.4 + animal.phase) * 24;
+            y = by + Math.cos(j * 2.2 + animal.phase) * 18;
+            break;
+          case 'bounce':
+            x = bx + Math.sin(j * 1.8 + animal.phase) * animal.amp;
+            y = by + Math.abs(Math.cos(j * 2.6 + animal.phase)) * 22;
+            break;
+          case 'pause':
+            x = bx + Math.sin(j * 0.9 + animal.phase) * 18;
+            y = by + (Math.sin(j * 2.1 + animal.phase) > 0.8 ? 18 : 0);
+            break;
+          case 'hidden':
+            x = bx + Math.sin(j * 1.2 + animal.phase) * 36;
+            y = by + (Math.sin(j * 2.4 + animal.phase) > 0.7 ? 20 : 0);
+            if (Math.sin(j * 3 + animal.phase) > 0.88) {
+              animal.el.style.filter = 'brightness(0.8)';
+            } else {
+              animal.el.style.filter = 'brightness(1)';
+            }
+            break;
         }
 
-        setTimeout(() => {
-          raiseClaw(() => {
-            claw.classList.remove('closed');
-            clawMoving = true;
-          });
-        }, 520);
+        animal.x = Math.max(10, Math.min(machine.clientWidth - 70, x));
+        animal.y = Math.max(14, Math.min(machine.clientHeight - 70, y));
+
+        animal.el.style.left = `${animal.x}px`;
+        animal.el.style.top = `${animal.y}px`;
       });
+
+      requestAnimationFrame(updateAnimals);
+    }
+
+    function resetHook() {
+      hook.x = 50;
+      hook.y = 0;
+      hook.lowered = false;
+      hook.grabbing = false;
+      hook.holding = null;
+      hook.claw.style.left = '50%';
+      hook.rope.style.height = '0px';
+      hook.head.classList.remove('closed');
+    }
+
+    function setHookPositionFromPercent(percent) {
+      hook.x = percent;
+      hook.claw.style.left = `${percent}%`;
+    }
+
+    function findTargetAnimal() {
+      const hookCenterX = hook.x;
+      const hookCenterY = 62 + (hook.rope.offsetHeight || 0);
+      let best = null;
+      let bestDist = 9999;
+
+      animals.forEach((animal) => {
+        if (animal.state !== 'free') return;
+        const dx = Math.abs(animal.x + 21 - (hookCenterX / 100) * machine.clientWidth);
+        const dy = Math.abs(animal.y + 21 - hookCenterY);
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 46 && dist < bestDist) {
+          bestDist = dist;
+          best = animal;
+        }
+      });
+
+      return best;
+    }
+
+    function lowerHook(callback) {
+      let h = 0;
+      const maxH = machine.clientHeight - 70;
+      const timer = setInterval(() => {
+        h += 8;
+        hook.rope.style.height = `${h}px`;
+        if (h >= maxH) {
+          clearInterval(timer);
+          callback && callback();
+        }
+      }, 18);
+    }
+
+    function raiseHook(callback) {
+      let h = parseInt(hook.rope.style.height || '0', 10) || 0;
+      const timer = setInterval(() => {
+        h -= 9;
+        if (h <= 0) {
+          h = 0;
+          clearInterval(timer);
+          hook.rope.style.height = '0px';
+          callback && callback();
+          return;
+        }
+        hook.rope.style.height = `${h}px`;
+      }, 18);
+    }
+
+    function moveHeldAnimalToHook() {
+      if (!hook.holding) return;
+      const animal = hook.holding;
+      const hookCenterX = (hook.x / 100) * machine.clientWidth;
+      const hookY = 62 + (parseInt(hook.rope.style.height || '0', 10) || 0);
+      animal.el.style.left = `${hookCenterX - 20}px`;
+      animal.el.style.top = `${hookY - 18}px`;
+      animal.el.style.zIndex = '999';
+    }
+
+    function attemptGrab() {
+      const target = findTargetAnimal();
+      if (!target) {
+        gameOn = true;
+        hook.active = true;
+        hook.grabbing = false;
+        hook.head.classList.remove('closed');
+        hook.rope.style.height = '0px';
+        return;
+      }
+
+      // bắt thú khi móc chạm vào
+      hook.grabbing = true;
+      hook.holding = target;
+      target.state = 'held';
+      hook.head.classList.add('closed');
+
+      lowerHook(() => {
+        target.el.classList.add('held');
+        moveHeldAnimalToHook();
+        setTimeout(() => {
+          raiseHook(() => {
+            const centerX = machine.clientWidth / 2 - 22;
+            const centerY = machine.clientHeight / 2 - 18;
+
+            target.el.style.left = `${centerX}px`;
+            target.el.style.top = `${centerY}px`;
+            target.el.style.transform = 'scale(1.8)';
+            target.el.classList.add('saved-burst');
+
+            saved.push(target.emoji);
+            setTimeout(() => {
+              target.el.remove();
+              hook.holding = null;
+              hook.grabbing = false;
+              hook.active = true;
+              hook.head.classList.remove('closed');
+              gameOn = true;
+            }, 280);
+          });
+        }, 150);
+      });
+    }
+
+    machineOuter.addEventListener('click', () => {
+      if (!gameOn) return;
+
+      const target = findTargetAnimal();
+      if (!target) {
+        return;
+      }
+
+      gameOn = false;
+      const currentX = hook.x;
+      const currentY = 0;
+      hook.x = currentX;
+      setHookPositionFromPercent(currentX);
+      attemptGrab();
     });
 
-    function lowerClaw(callback) {
-      let h = 0;
-      const maxH = machine.offsetHeight - claw.querySelector('.claw-head').offsetHeight - 20;
-      const iv = setInterval(() => {
-        h += 8;
-        rope.style.height = h + 'px';
-        if (h >= maxH) {
-          clearInterval(iv);
-          callback();
-        }
-      }, 18);
+    function setHookPositionFromPercent(percent) {
+      hook.x = percent;
+      const hookZone = document.getElementById('hook-zone');
+      if (hookZone) {
+        hookZone.style.left = `${percent}%`;
+      }
     }
 
-    function raiseClaw(callback) {
-      let h = machine.offsetHeight - claw.querySelector('.claw-head').offsetHeight - 20;
-      const iv = setInterval(() => {
-        h -= 8;
-        rope.style.height = h + 'px';
-        if (h <= 0) {
-          clearInterval(iv);
-          rope.style.height = '0px';
-          callback();
-        }
-      }, 18);
-    }
-
-    function spawnFloatEmoji(emoji, x, y) {
-      const el = document.createElement('div');
-      el.className = 'caught';
-      el.textContent = emoji;
-      el.style.left = x + 'px';
-      el.style.top = y + 'px';
-      document.body.appendChild(el);
-      setTimeout(() => el.remove(), 1800);
+    function setTimer() {
+      timerEl.textContent = timeLeft;
     }
 
     function endGame() {
       gameOn = false;
-      clawMoving = false;
       machineOuter.classList.add('closed');
       machine.classList.add('closed');
 
-      const allPets = [...document.querySelectorAll('.pet')];
-      for (const pet of allPets) {
-        if (pet.style.opacity === '0') continue;
-        lost.push(pet.textContent.trim());
-      }
+      animals.forEach((animal) => {
+        if (animal.state === 'held' || animal.el.isConnected === false) return;
+        lost.push(animal.emoji);
+      });
 
       setTimeout(() => {
         resultEl.classList.add('show');
         if (saved.length) {
-          savedListEl.innerHTML = saved.map(e => `<div class="animal saved">${e}</div>`).join('');
+          savedListEl.innerHTML = saved.map((emoji) => `<div class="animal saved">${emoji}</div>`).join('');
         } else {
           savedListEl.innerHTML = '<div class="empty">Không có thú nào được cứu 😭</div>';
         }
 
         if (lost.length) {
-          lostListEl.innerHTML = lost.map(e => `<div class="animal lost">${e}</div>`).join('');
+          lostListEl.innerHTML = lost.map((emoji) => `<div class="animal lost">${emoji}</div>`).join('');
         } else {
           lostListEl.innerHTML = '<div class="empty">Tất cả đã được cứu! 🎉</div>';
         }
       }, 500);
     }
+
+    function init() {
+      buildClaw();
+      for (let i = 0; i < 25; i++) {
+        createAnimal(i);
+      }
+      setTimer();
+      setHookPositionFromPercent(50);
+      requestAnimationFrame(updateAnimals);
+
+      setInterval(() => {
+        if (!gameOn) return;
+        timeLeft--;
+        timerEl.textContent = timeLeft;
+        if (timeLeft <= 10) timerEl.classList.add('warning');
+        if (timeLeft <= 0) {
+          endGame();
+        }
+      }, 1000);
+    }
+
+    init();
   </script>
 </body>
 </html>
